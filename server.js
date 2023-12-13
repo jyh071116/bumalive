@@ -1,3 +1,5 @@
+const { copyFileSync } = require("fs");
+
 const app = require("express")();
 const server = require("http").createServer(app);
 const io = require("socket.io")(server);
@@ -10,8 +12,22 @@ app.get("/", (req, res) => {
   res.sendFile(__dirname + "/index.html");
 });
 
+let chatting = {};
+
 io.on("connection", (socket) => {
-  let chatting = {};
+  const enterRoom = (roomId) => {
+    chatting[roomId] = [];
+    io.to(roomId).emit("broadcast", {
+      roomId: roomId,
+      msg: roomId + "번 방에 입장하셨습니다",
+    });
+  };
+
+  const deleteRoom = (roomId) => {
+    delete chatting.roomId;
+    io.to(roomId).emit("leave");
+    io.sockets.adapter.rooms.delete(roomId);
+  };
 
   socket.on("join", async () => {
     let i = 0;
@@ -26,41 +42,32 @@ io.on("connection", (socket) => {
           const wait = setInterval(() => {
             const personnel = io.sockets.adapter.rooms.get(i).size;
             if (personnel == 2) {
-              io.to(i).emit("broadcast", {
-                roomId: i,
-                msg: i + "번 방에 입장하셨습니다",
-              });
+              enterRoom(i);
               clearInterval(wait);
             }
           }, 1000);
           break;
         } else {
           socket.join(i);
-          io.to(i).emit("broadcast", {
-            roomId: i,
-            msg: i + "번 방에 입장하셨습니다",
-          });
+          enterRoom(i);
           break;
         }
       }
     }
   });
 
-  socket.on("leave", async () => {
-    const rooms = io.sockets.adapter.rooms;
-    rooms.forEach((value, key) => {
-      if (value.has(socket.id)) {
-        io.sockets.adapter.rooms.delete(key);
-      }
-    });
+  socket.on("leave", async (roomId) => deleteRoom(roomId));
+
+  socket.on("message", async (roomId) => {
+    const room = io.sockets.adapter.rooms.get(roomId);
+    if (!room || room.size < 2) {
+      deleteRoom(roomId);
+    } else {
+      io.to(roomId).emit("message", chatting[roomId]);
+    }
   });
 
-  // socket.on("message", () => {
-  //   const rooms = io.sockets.adapter.rooms;
-  //   rooms.forEach((value, key) => {
-  //     if (value.has(socket.id)) {
-  //       io.to(key).emit("message", chatting[key]);
-  //     }
-  //   });
-  // });
+  socket.on("send", async (roomId, content) => {
+    chatting[roomId].push({ user: socket.id, content: content });
+  });
 });

@@ -7,31 +7,74 @@
   </head>
   <body>
     <button id="connect">채팅방 찾기</button>
+    <div id="message"></div>
     <div id="broadcast"></div>
     <button id="disconnect" style="display: none">연결 끊기</button>
+    <form id="inputForm" style="display: none">
+      <input />
+    </form>
     <script src="https://cdn.jsdelivr.net/npm/socket.io@4.7.2/client-dist/socket.io.min.js"></script>
     <script>
       const socket = io();
-      let roomId = 0
+      let roomId = undefined;
 
-      document.querySelector("#connect").addEventListener("click", async () => {
-        document.querySelector("#broadcast").innerHTML = "찾는 중...";
+      const broadcast = document.getElementById("broadcast");
+      const disconnect = document.getElementById("disconnect");
+      const connect = document.getElementById("connect");
+      const message = document.getElementById("message");
+      const inputForm = document.getElementById("inputForm");
+
+      const joinRoom = async () => {
+        broadcast.innerHTML = "찾는 중...";
         await socket.emit("join");
-        socket.on("broadcast", (data) => {
-          document.querySelector("#broadcast").innerHTML = data;
-          document.querySelector("#disconnect").style.display = "block";
-          document.querySelector("#connect").style.display = "none";
+        socket.on("broadcast", (res) => {
+          roomId = res.roomId;
+          broadcast.innerHTML = res.msg;
+          disconnect.style.display = "block";
+          connect.style.display = "none";
+          inputForm.style.display = "block";
         });
+      };
+
+      const sendMessage = async (content) => {
+        await socket.emit("send", roomId, content);
+      };
+
+      connect.addEventListener("click", async () => await joinRoom());
+
+      disconnect.addEventListener(
+        "click",
+        async () => await socket.emit("leave", roomId),
+      );
+
+      inputForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        sendMessage(e.target.children[0].value);
+        e.target.children[0].value = "";
       });
 
-      document
-        .querySelector("#disconnect")
-        .addEventListener("click", async () => {
-          await socket.emit("leave");
-          document.querySelector("#broadcast").innerHTML = "";
-          document.querySelector("#disconnect").style.display = "none";
-          document.querySelector("#connect").style.display = "block";
+      socket.on("message", (res) => {
+        let resMessage = ``;
+        res.forEach((msg) => {
+          resMessage += `<div>${msg.user}: ${msg.content}</div>`;
         });
+        message.innerHTML = resMessage;
+      });
+
+      socket.on("leave", () => {
+        roomId = undefined;
+        broadcast.innerHTML = "";
+        message.innerHTML = "";
+        disconnect.style.display = "none";
+        connect.style.display = "block";
+        inputForm.style.display = "none";
+      });
+
+      setInterval(async () => {
+        if (typeof roomId === "number") {
+          await socket.emit("message", roomId);
+        }
+      }, 1000);
     </script>
   </body>
 </html>
