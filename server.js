@@ -68,4 +68,8 @@ io.on("connection", (socket) => {
   socket.on("send", async (roomId, content) => {
     chatting[roomId].push({ user: socket.id, content: content });
   });
+  
+  socket.on("clientsCount", () => {
+    io.emit("clientsCount", io.engine.clientsCount)
+  })
 });
