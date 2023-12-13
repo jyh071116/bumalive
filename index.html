@@ -26,6 +26,7 @@
 
       const joinRoom = async () => {
         broadcast.innerHTML = "찾는 중...";
+        message.innerHTML = "";
         await socket.emit("join");
         socket.on("broadcast", (res) => {
           roomId = res.roomId;
