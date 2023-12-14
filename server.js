@@ -32,7 +32,7 @@ io.on("connection", (socket) => {
   };
 
   socket.on("join", async () => {
-    let i = 0;
+    i = 0;
     while (true) {
       try {
         const personnel = io.sockets.adapter.rooms.get(i).size;
