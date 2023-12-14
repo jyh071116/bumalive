@@ -13,10 +13,11 @@ app.get("/", (req, res) => {
 let chatting = {};
 
 io.on("connection", (socket) => {
+  let i = 0;
   const enterRoom = (roomId) => {
     chatting[roomId] = [];
     io.to(roomId).emit("broadcast", {
-      roomId: roomId,
+      roomId,
       msg: roomId + "번 방에 입장하셨습니다",
     });
   };
@@ -28,7 +29,7 @@ io.on("connection", (socket) => {
   };
 
   socket.on("join", async () => {
-    let i = 0;
+    i = 0;
     while (true) {
       try {
         const personnel = io.sockets.adapter.rooms.get(i).size;
@@ -38,9 +39,13 @@ io.on("connection", (socket) => {
         if (e instanceof TypeError) {
           socket.join(i);
           const wait = setInterval(() => {
-            const personnel = io.sockets.adapter.rooms.get(i).size;
-            if (personnel == 2) {
-              enterRoom(i);
+            if (io.sockets.adapter.rooms.get(i)) {
+              const personnel = io.sockets.adapter.rooms.get(i).size;
+              if (personnel == 2) {
+                enterRoom(i);
+                clearInterval(wait);
+              }
+            } else {
               clearInterval(wait);
             }
           }, 1000);
@@ -68,8 +73,13 @@ io.on("connection", (socket) => {
   socket.on("send", async (roomId, content) => {
     chatting[roomId].push({ user: socket.id, content: content });
   });
-  
+
   socket.on("clientsCount", () => {
-    io.emit("clientsCount", io.engine.clientsCount)
-  })
+    io.emit("clientsCount", io.engine.clientsCount);
+  });
+
+  socket.on("cancel", () => {
+    io.to(i).emit("leave");
+    socket.leave(i);
+  });
 });
