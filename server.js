@@ -1,6 +1,9 @@
 const app = require("express")();
 const server = require("http").createServer(app);
 const io = require("socket.io")(server);
+const express = require("express");
+
+app.use(express.static('public'));
 
 server.listen(3000, () => {
   console.log("서버가 실행되었습니다");
@@ -18,7 +21,7 @@ io.on("connection", (socket) => {
     chatting[roomId] = [];
     io.to(roomId).emit("broadcast", {
       roomId,
-      msg: roomId + "번 방에 입장하셨습니다",
+      msg: "대화가 시작되었습니다.",
     });
   };
 
@@ -29,7 +32,7 @@ io.on("connection", (socket) => {
   };
 
   socket.on("join", async () => {
-    i = 0;
+    let i = 0;
     while (true) {
       try {
         const personnel = io.sockets.adapter.rooms.get(i).size;

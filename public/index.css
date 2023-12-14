@@ -1,0 +1,143 @@
+@font-face {
+  font-family: "영덕대게체";
+  src: url("./FONT/Yeongdeok\ Snow\ Crab.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "원 모바일";
+  src: url("./FONT/ONE\ Mobile\ POP\ OTF.otf");
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+#header {
+  height: 15vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-bottom: #888888 solid 3px;
+}
+
+#header img {
+  height: 100%;
+  margin-right: 20px;
+}
+
+#header p {
+  font-family: "원 모바일";
+  font-size: 50px;
+}
+
+#header span {
+  color: #fd2061;
+}
+
+#main {
+  height: 85vh;
+  width: 100vw;
+  background-color: #f8fcff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#chatbox {
+  padding: 1% 5%;
+  width: 60vw;
+  height: 70vh;
+  background-color: white;
+  border-radius: 20px;
+  border: black solid 3px;
+}
+
+#chatbox_header {
+  height: 8vh;
+  width: 100%;
+  border-bottom: #d9d9d9 solid 1px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 2.5%;
+}
+
+#chatbox_header {
+  margin-top: 1%;
+}
+
+#title {
+  width: 40%;
+  font-family: "영덕대게체";
+  font-size: 1.5rem;
+  color: #597eff;
+}
+
+#clientCount {
+  font-family: "영덕대게체";
+}
+
+#chatbox_content {
+  display: flex;
+  justify-content: center;
+}
+
+#chatbox_main {
+  position: relative;
+  width: 100%;
+  height: 22.5rem;
+  padding: 3.5%;
+  border: #d9d9d9 solid 1px;
+  border-top: none;
+  border-bottom-left-radius: 15px;
+  border-bottom-right-radius: 15px;
+  overflow: auto;
+}
+
+#chatbox_main_header {
+  display: flex;
+  justify-content: space-between;
+}
+
+#chatbox_main_title {
+  font-family: "영덕대게체";
+  font-size: 1.1rem;
+}
+
+.connects_button {
+  font-family: "원 모바일";
+  border: #d9d9d9 solid 3px;
+  border-radius: 15px;
+  color: white;
+  background-color: #ff002e;
+  padding: 2% 3%;
+  cursor: pointer;
+}
+
+.alert {
+  color: #ff3030;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+#broadcast {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #ff3030;
+}
+
+#inputForm {
+  width: 100%;
+  height: 5vh;
+}
+
+#text {
+  margin-top: 7px;
+  border-radius: 15px;
+  border: #d9d9d9 solid 3px;
+  width: 100%;
+  height: 100%;
+  padding: 0 10px;
+}
