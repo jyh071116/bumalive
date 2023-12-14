@@ -4,108 +4,49 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Document</title>
-  <link rel="stylesheet" href="index.css">
+  <title>두근두근 랜덤채팅</title>
+  <link rel="stylesheet" href="http://localhost:3000/index.css">
+  <link rel="shortcut icon" href="http://localhost:3000/IMG/Logo.svg" type="image/x-icon">
 </head>
 
 <body>
   <div>
     <div id="header">
-      <img src="./IMG/Logo.svg" alt="로고다능">
+      <img src="./IMG/Logo.svg" alt="로고">
       <p>우리 둘만 아는 <span>비밀?</span></p>
     </div>
     <div id="main">
+      <div id="chatbox">
+        <div id="chatbox_header">
+          <div id="title">*랜덤 채팅창</div>
+          <button class="connects_button" id="connect">대화 시작하기</button>
+          <button class="connects_button" id="disconnect" style="display: none;">대화 종료하기</button>
+          <button class="connects_button" id="cancel" style=" display: none;">취소</button>
+          <div id="clientCount">접속자 수: 0명</div>
+        </div>
+        <div id="chatbox_content">
+          <div id="chatbox_main">
+            <div id="chatbox_main_header">
+              <p id="chatbox_main_title">
+                <두근두근 랜덤채팅>
+              </p>
+            </div>
+            <div class="chat">
+              <div id="broadcast"></div>
+              <div id="message">
+              </div>
+            </div>
+          </div>
+        </div>
+        <form id="inputForm" style="display: none">
+          <input id="text" autocomplete="off" />
+        </form>
+      </div>
 
     </div>
   </div>
-  <!-- <div id="clientCount">현재 접속 중인 유저 수: 0명</div>
-  <div id="broadcast"></div>
-  <div id="message"></div>
-  <button id="disconnect" style="display: none">연결 끊기</button>
-  <button id="connect">채팅방 찾기</button>
-  <button id="cancel" style="display: none">취소</button>
-  <form id="inputForm" style="display: none">
-    <input />
-  </form> -->
   <script src="https://cdn.jsdelivr.net/npm/socket.io@4.7.2/client-dist/socket.io.min.js"></script>
-  <script>
-    const socket = io();
-    let roomId = undefined;
-
-    const broadcast = document.getElementById("broadcast");
-    const disconnect = document.getElementById("disconnect");
-    const connect = document.getElementById("connect");
-    const message = document.getElementById("message");
-    const inputForm = document.getElementById("inputForm");
-    const clientCount = document.getElementById("clientCount");
-    const cancel = document.getElementById("cancel");
-
-    const joinRoom = async () => {
-      broadcast.innerHTML = "찾는 중...";
-      cancel.style.display = "block";
-      connect.style.display = "none";
-      message.innerHTML = "";
-      await socket.emit("join");
-      socket.on("broadcast", (res) => {
-        roomId = res.roomId;
-        broadcast.innerHTML = res.msg;
-        message.innerHTML = "";
-        cancel.style.display = "none";
-        disconnect.style.display = "block";
-        inputForm.style.display = "block";
-      });
-    };
-
-    const sendMessage = async (content) => {
-      await socket.emit("send", roomId, content);
-    };
-
-    connect.addEventListener("click", () => joinRoom());
-
-    disconnect.addEventListener("click", () => socket.emit("leave", roomId));
-
-    inputForm.addEventListener("submit", (e) => {
-      e.preventDefault();
-      sendMessage(e.target.children[0].value);
-      e.target.children[0].value = "";
-    });
-
-    cancel.addEventListener("click", () => socket.emit("cancel"));
-
-    socket.on("message", (res) => {
-      res = res.map((chat) => {
-        if (chat.user == socket.id) chat.user = "나";
-        else chat.user = "상대방";
-        return chat;
-      });
-      let resMessage = ``;
-      res.forEach((msg) => {
-        resMessage += `<div>${msg.user}: ${msg.content}</div>`;
-      });
-      message.innerHTML = resMessage;
-    });
-
-    socket.on("leave", () => {
-      roomId = undefined;
-      broadcast.innerHTML = "";
-      message.innerHTML += "<div>방이 종료되었습니다</div>"
-      disconnect.style.display = "none";
-      connect.style.display = "block";
-      cancel.style.display = "none"
-      inputForm.style.display = "none";
-    });
-
-    socket.on("clientsCount", (res) => {
-      clientCount.innerHTML = `현재 접속 중인 유저 수: ${res}명`;
-    });
-
-    setInterval(async () => {
-      await socket.emit("clientsCount");
-      if (typeof roomId === "number") {
-        await socket.emit("message", roomId);
-      }
-    }, 100);
-  </script>
+  <script src="http://localhost:3000/index.js"></script>
 </body>
 
 </html>
