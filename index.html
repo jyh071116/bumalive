@@ -76,6 +76,7 @@
       socket.on("leave", () => {
         roomId = undefined;
         broadcast.innerHTML = "";
+        message.innerHTML = "<div>방이 종료되었습니다</div>"
         disconnect.style.display = "none";
         connect.style.display = "block";
         cancel.style.display = "none"
