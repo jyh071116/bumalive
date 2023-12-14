@@ -1,0 +1,36 @@
+@font-face {
+  font-family: "영덕대게체";
+  src: url("./FONT/Yeongdeok\ Snow\ Crab.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "원 모바일";
+  src: url("./FONT/ONE\ Mobile\ POP\ OTF.otf");
+}
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+#header {
+  height: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 4px 4px -4px black;
+}
+
+#header img {
+  height: 100%;
+  margin-right: 20px;
+}
+
+#header p {
+  font-family: "원 모바일";
+  font-size: 50px;
+}
+
+#header span {
+  color: #fd2061;
+}
