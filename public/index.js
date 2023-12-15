@@ -23,6 +23,7 @@ const joinRoom = async () => {
     roomId = res.roomId;
     broadcast.innerHTML = res.msg;
     message.innerHTML = "";
+    text.value = "";
     cancel.style.display = "none";
     disconnect.style.display = "block";
     inputForm.style.display = "block";
