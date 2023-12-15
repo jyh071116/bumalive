@@ -14,6 +14,7 @@ app.get("/", (req, res) => {
 });
 
 let chatting = {};
+let firstValue = 0;
 
 io.on("connection", (socket) => {
   let i = 0;
@@ -32,7 +33,7 @@ io.on("connection", (socket) => {
   };
 
   socket.on("join", async () => {
-    i = 0;
+    i = firstValue;
     while (true) {
       try {
         const personnel = io.sockets.adapter.rooms.get(i).size;
@@ -56,6 +57,7 @@ io.on("connection", (socket) => {
         } else {
           socket.join(i);
           enterRoom(i);
+          firstValue = i+1;
           break;
         }
       }
