@@ -13,7 +13,6 @@ const main = document.getElementById("chatbox_main");
 const connects_button = document.querySelector(".connects_button");
 
 const joinRoom = async () => {
-  console.log("방찾기");
   broadcast.innerHTML = "찾는 중...";
   connect.style.display = "none";
   cancel.style.display = "block";
@@ -23,10 +22,11 @@ const joinRoom = async () => {
     roomId = res.roomId;
     broadcast.innerHTML = res.msg;
     message.innerHTML = "";
-    text.value = "";
     cancel.style.display = "none";
     disconnect.style.display = "block";
     inputForm.style.display = "block";
+    text.value = "";
+    text.focus();
   });
 };
 
@@ -65,8 +65,10 @@ socket.on("message", (res) => {
   res.forEach((msg) => {
     resMessage += `<div style="color: ${msg.color};"><span style="font-weight: 600">${msg.user}</span>: ${msg.content}</div>`;
   });
-
-  message.innerHTML = resMessage;
+  if (message.innerHTML != resMessage) {
+    message.innerHTML = resMessage;
+    main.scrollTop = main.scrollHeight;
+  }
 });
 
 socket.on("leave", () => {
@@ -84,7 +86,6 @@ socket.on("clientsCount", (res) => {
 });
 
 setInterval(async () => {
-  main.scrollTop = main.scrollHeight;
   await socket.emit("clientsCount");
   if (typeof roomId === "number") {
     await socket.emit("message", roomId);
