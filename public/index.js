@@ -9,6 +9,7 @@ const inputForm = document.getElementById("inputForm");
 const clientCount = document.getElementById("clientCount");
 const cancel = document.getElementById("cancel");
 const text = document.getElementById("text");
+const main = document.getElementById("chatbox_main");
 const connects_button = document.querySelector(".connects_button");
 
 const joinRoom = async () => {
@@ -82,6 +83,7 @@ socket.on("clientsCount", (res) => {
 });
 
 setInterval(async () => {
+  main.scrollTop = main.scrollHeight;
   await socket.emit("clientsCount");
   if (typeof roomId === "number") {
     await socket.emit("message", roomId);
